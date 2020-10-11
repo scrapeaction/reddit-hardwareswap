@@ -31,15 +31,20 @@ function crawlPage() {
         const addresses = await page.$$eval('a', as => as.map(a => a.href));
         console.log(addresses);
 
+
         for (let i = 0; i < addresses.length; i++) {
             console.log(addresses[i]);
             const name = addresses[i].lastIndexOf('/');
             console.log({ name });
-            await page.goto(addresses[i], { "waitUntil": "networkidle2", timeout: 300000 })
-            await page.screenshot({
-                path: `screenshots/screenshots-${i}.png`,
-                fullPage: true
-            });
+            try {
+                await page.goto(addresses[i], { "waitUntil": "networkidle2", timeout: 300000 });
+                await page.screenshot({
+                    path: `screenshots/screenshots-${i}.png`,
+                    fullPage: true
+                });
+            } catch (error) {
+                console.error(error);
+            };
         }
 
         await page.close();
